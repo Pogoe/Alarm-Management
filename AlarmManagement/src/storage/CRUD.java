@@ -27,7 +27,7 @@ public class CRUD
         try
         {
             Class.forName("org.postgresql.Driver");
-            String url = "jdbc:postgresql://localhost:5432/RecipeDB"; //TODO: Set up the database and change name
+            String url = "jdbc:postgresql://localhost:5432/AMDB";
             String user = "postgres";
             String pass = "u7e98d22";
             conn = DriverManager.getConnection(url, user, pass);
