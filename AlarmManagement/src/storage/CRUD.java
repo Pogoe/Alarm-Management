@@ -14,8 +14,10 @@ import plc.Error;
 public class CRUD
 {
     private Connection conn;
-    private PreparedStatement errorSt;
-    private PreparedStatement solutionSt;
+    private PreparedStatement getErrorSt;
+    private PreparedStatement getSolutionSt;
+    private PreparedStatement storeErrorSt;
+    private PreparedStatement storeSolutionSt;
     
     protected CRUD()
     {
@@ -31,8 +33,8 @@ public class CRUD
             String user = "postgres";
             String pass = "u7e98d22";
             conn = DriverManager.getConnection(url, user, pass);
-            errorSt = conn.prepareStatement("SELECT * FROM Error WHERE errorCode = ?;");
-            solutionSt = conn.prepareStatement("SELECT * FROM Solution WHERE errorId = ?;");
+            getErrorSt = conn.prepareStatement("SELECT * FROM Error WHERE errorCode = ?;");
+            getSolutionSt = conn.prepareStatement("SELECT * FROM Solution WHERE errorId = ?;");
         } catch (ClassNotFoundException | SQLException ex)
         {
             System.err.println(ex);
@@ -44,8 +46,8 @@ public class CRUD
         List<Solution> l = new ArrayList<>();
         try
         {
-            solutionSt.setString(1, errorCode);
-            ResultSet rs = solutionSt.executeQuery();
+            getSolutionSt.setString(1, errorCode);
+            ResultSet rs = getSolutionSt.executeQuery();
             while(rs.next())
             {
                 l.add(new Solution(rs.getInt("id"), rs.getInt("errorId"), rs.getString("description")));
@@ -64,8 +66,8 @@ public class CRUD
         
         try
         {
-            errorSt.setString(1, errorCode);
-            ResultSet rs = errorSt.executeQuery();
+            getErrorSt.setString(1, errorCode);
+            ResultSet rs = getErrorSt.executeQuery();
             while(rs.next())
             {
                 l.add(new Error(rs.getInt("id"), rs.getInt("errorCode"), new Date(rs.getTimestamp("time").getTime()), rs.getString("description")));
