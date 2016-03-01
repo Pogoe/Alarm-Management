@@ -35,6 +35,8 @@ public class CRUD
             conn = DriverManager.getConnection(url, user, pass);
             getErrorSt = conn.prepareStatement("SELECT * FROM Error WHERE errorCode = ?;");
             getSolutionSt = conn.prepareStatement("SELECT * FROM Solution WHERE errorId = ?;");
+            storeErrorSt = conn.prepareStatement("INSERT INTO Error(errorCode, description) VALUES (?, ?) RETURNING id;");
+            storeSolutionSt = conn.prepareStatement("INSERT INTO Solution(errorId, description) VALUES (?, ?) RETURNING id;");
         } catch (ClassNotFoundException | SQLException ex)
         {
             System.err.println(ex);
