@@ -2,6 +2,7 @@ package storage;
 
 import java.util.List;
 import plc.Solution;
+import plc.Error;
 
 public class CRUDController
 {
@@ -26,7 +27,31 @@ public class CRUDController
     {
         synchronized(crud)
         {
-            return crud.getSolutions(String.valueOf(errorCode));
+            return crud.getSolutions(errorCode);
+        }
+    }
+    
+    public List<Error> getAllErrors(int errorCode)
+    {
+        synchronized(crud)
+        {
+            return crud.getAllErrors(errorCode);
+        }
+    }
+    
+    public int storeError(int errorCode, String description)
+    {
+        synchronized(crud)
+        {
+            return crud.storeError(errorCode, description);
+        }
+    }
+    
+    public int storeSolution(int errorCode, String description)
+    {
+        synchronized(crud)
+        {
+            return crud.storeSolution(errorCode, description);
         }
     }
 }

@@ -1,7 +1,6 @@
 package plc;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import storage.CRUDController;
@@ -27,10 +26,25 @@ public class Error implements Serializable
     {
         return CRUDController.get().getSolutions(errorCode);
     }
+    
+    public List<Solution> getSolutions()
+    {
+        return solutions;
+    }
+    
+    public Solution getSolution(int index)
+    {
+        return solutions.get(index);
+    }
 
     public int getId()
     {
         return id;
+    }
+    
+    public void setId(int id)
+    {
+        this.id = id;
     }
 
     public int getErrorCode()
