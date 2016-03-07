@@ -41,14 +41,14 @@ public class CRUD
             String user = "postgres";
             String pass = "u7e98d22";
             conn = DriverManager.getConnection(url, user, pass);
-            getAllErrorSt = conn.prepareStatement("SELECT * FROM Error WHERE errorCode = ?;");
-            getErrorsBeforeSt = conn.prepareStatement("SELECT * FROM Error WHERE time < ?");
-            getErrorsAfterSt = conn.prepareStatement("SELECT * FROM Error WHERE time > ?");
-            getErrorsOnDaySt = conn.prepareStatement("SELECT * FROM Error WHERE time > ? AND time < ?");
+            getAllErrorSt = conn.prepareStatement("SELECT * FROM LogError WHERE errorCode = ?;");
+            getErrorsBeforeSt = conn.prepareStatement("SELECT * FROM LogError WHERE time < ?");
+            getErrorsAfterSt = conn.prepareStatement("SELECT * FROM LogError WHERE time > ?");
+            getErrorsOnDaySt = conn.prepareStatement("SELECT * FROM LogError WHERE time > ? AND time < ?");
             getSolutionSt = conn.prepareStatement("SELECT * FROM Solution WHERE errorId = ?;");
-            storeErrorSt = conn.prepareStatement("INSERT INTO Error(errorCode, description) VALUES (?, ?) RETURNING id;");
+            storeErrorSt = conn.prepareStatement("INSERT INTO LogError(errorCode, description) VALUES (?, ?) RETURNING id;");
             storeSolutionSt = conn.prepareStatement("INSERT INTO Solution(errorId, description) VALUES (?, ?) RETURNING id;");
-            incrementSolutionSt = conn.prepareStatement("UPDATE Solution SET timesSolved = timesSolved + 1 WHERE errorCode = ?;");
+            incrementSolutionSt = conn.prepareStatement("UPDATE Solved SET timesSolved = timesSolved + 1 WHERE errorCode = ?;");
         } catch (ClassNotFoundException | SQLException ex)
         {
             Logger.getLogger(CRUD.class.getName()).log(Level.SEVERE, null, ex);
