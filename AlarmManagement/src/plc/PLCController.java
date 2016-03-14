@@ -1,13 +1,15 @@
 package plc;
 
+import gui.GUIController;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Observable;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class PLCController
+public class PLCController extends Observable
 {
     private static PLCController instance;
     private List<Greenhouse> greenhouses;
@@ -17,6 +19,7 @@ public class PLCController
     {
         this.greenhouses = new LinkedList<>();
         this.errors = new ConcurrentHashMap<>();
+        addObserver(GUIController.get());
     }
     
     public static PLCController get()
@@ -32,12 +35,18 @@ public class PLCController
     {
         greenhouses.add(g);
         errors.put(g, new HashSet<>());
+        notifyObservers(g);
     }
     
     public void removeGreenhouse(Greenhouse g)
     {
         greenhouses.remove(g);
         errors.remove(g);
+    }
+    
+    public List<Greenhouse> getGreenhouses()
+    {
+        return greenhouses;
     }
     
     public void checkForErrors()
