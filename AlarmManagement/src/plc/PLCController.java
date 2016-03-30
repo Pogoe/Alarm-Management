@@ -63,11 +63,13 @@ public class PLCController extends Observable
     public void addError(Greenhouse g, Error e)
     {
         errors.get(g).add(e);
+        notifyObservers(e);
     }
     
     public void removeError(Greenhouse g, Error e)
     {
         errors.get(g).remove(e);
+        GUIController.get().removeError(e);
     }
     
     public Set<Error> getErrors(Greenhouse g)

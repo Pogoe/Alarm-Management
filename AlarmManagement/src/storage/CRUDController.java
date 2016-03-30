@@ -54,4 +54,12 @@ public class CRUDController
             return crud.storeSolution(errorCode, description);
         }
     }
+    
+    public void updateError(int id, int solution, String notes)
+    {
+        synchronized(crud)
+        {
+            crud.updateError(id, solution, notes);
+        }
+    }
 }

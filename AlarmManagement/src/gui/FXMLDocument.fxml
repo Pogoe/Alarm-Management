@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.web.*?>
+<?import javafx.scene.text.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
@@ -8,30 +10,54 @@
 
 <AnchorPane id="AnchorPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="640.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.GUIController">
    <children>
-      <TabPane layoutX="320.0" layoutY="70.0" prefHeight="480.0" prefWidth="640.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <TabPane fx:id="pane" layoutX="320.0" layoutY="70.0" prefHeight="480.0" prefWidth="640.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <tabs>
-          <Tab text="Overblik">
+          <Tab fx:id="overviewTab" text="Overblik">
             <content>
               <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
             </content>
           </Tab>
-          <Tab text="Drivhuse">
-               <content>
-                  <SplitPane dividerPositions="0.29797979797979796" prefHeight="160.0" prefWidth="200.0">
-                    <items>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="561.0" prefWidth="268.0" SplitPane.resizableWithParent="false">
-                           <children>
-                              <ListView fx:id="greenHouseListView" layoutX="-6.0" maxHeight="451.0" maxWidth="188.0" minHeight="451.0" minWidth="188.0" prefHeight="451.0" prefWidth="188.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-                           </children>
-                        </AnchorPane>
-                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" SplitPane.resizableWithParent="false" />
-                    </items>
-                  </SplitPane>
-               </content>
-          </Tab>
-            <Tab text="Database management">
+            <Tab fx:id="greenhouseTab" text="Drivhuse">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <ListView fx:id="greenhouseListView" layoutY="45.0" prefHeight="406.0" prefWidth="215.0" />
+                        <ListView fx:id="errorListView" layoutX="226.0" layoutY="44.0" prefHeight="400.0" prefWidth="266.0" />
+                        <Label fx:id="greenhouseLabel" layoutX="80.0" layoutY="14.0" text="Greenhouses">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="errorLabel" layoutX="341.0" layoutY="14.0" text="Errors">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="handleErrorButton" layoutX="531.0" layoutY="213.0" mnemonicParsing="false" onAction="#handleErrorAction" text="Handle error" />
+                     </children>
+                  </AnchorPane>
+              </content>
+            </Tab>
+            <Tab fx:id="databaseTab" text="Database management">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                     <children>
+                        <TableView fx:id="errorTable" layoutX="14.0" layoutY="14.0" prefHeight="400.0" prefWidth="292.0">
+                          <columns>
+                            <TableColumn fx:id="errorTableCode" editable="false" prefWidth="64.0" text="Error code" />
+                            <TableColumn fx:id="errorTableDescription" editable="false" minWidth="0.0" prefWidth="227.0" text="Description" />
+                          </columns>
+                        </TableView>
+                        <TableView fx:id="solutionTable" layoutX="320.0" layoutY="14.0" prefHeight="400.0" prefWidth="309.0">
+                          <columns>
+                            <TableColumn fx:id="solutionTableId" editable="false" prefWidth="36.0" text="Id" />
+                            <TableColumn fx:id="solutionTableCode" editable="false" prefWidth="82.0" text="error code" />
+                              <TableColumn fx:id="solutionTableDescritption" editable="false" prefWidth="190.0" text="Description" />
+                          </columns>
+                        </TableView>
+                        <Button fx:id="newErrorBtn" layoutX="14.0" layoutY="414.0" mnemonicParsing="false" onAction="#newError" text="New Error" />
+                        <Button fx:id="newSolutionBtn" layoutX="320.0" layoutY="414.0" mnemonicParsing="false" onAction="#newSolution" text="New Solution" />
+                     </children></AnchorPane>
               </content>
             </Tab>
         </tabs>

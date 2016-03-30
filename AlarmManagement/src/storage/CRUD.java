@@ -24,6 +24,7 @@ public class CRUD
     private PreparedStatement getErrorsOnDaySt;
     private PreparedStatement getSolutionSt;
     private PreparedStatement storeErrorSt;
+    private PreparedStatement updateErrorSt;
     private PreparedStatement storeSolutionSt;
     private PreparedStatement incrementSolutionSt;
     
@@ -45,8 +46,9 @@ public class CRUD
             getErrorsBeforeSt = conn.prepareStatement("SELECT * FROM LogError WHERE time < ?");
             getErrorsAfterSt = conn.prepareStatement("SELECT * FROM LogError WHERE time > ?");
             getErrorsOnDaySt = conn.prepareStatement("SELECT * FROM LogError WHERE time > ? AND time < ?");
-            getSolutionSt = conn.prepareStatement("SELECT * FROM Solution WHERE errorId = ?;");
+            getSolutionSt = conn.prepareStatement("SELECT * FROM Solution NATURAL JOIN Solved WHERE errorId = ? ORDER BY timesSolved;");
             storeErrorSt = conn.prepareStatement("INSERT INTO LogError(errorCode, description) VALUES (?, ?) RETURNING id;");
+            updateErrorSt = conn.prepareStatement("UPDATE LogError SET solution = ? AND Notes = ? WHERE id = ?");
             storeSolutionSt = conn.prepareStatement("INSERT INTO Solution(errorId, description) VALUES (?, ?) RETURNING id;");
             incrementSolutionSt = conn.prepareStatement("UPDATE Solved SET timesSolved = timesSolved + 1 WHERE errorCode = ?;");
         } catch (ClassNotFoundException | SQLException ex)
@@ -227,5 +229,19 @@ public class CRUD
         }
         
         return id;
+    }
+    
+    protected void updateError(int id, int solution, String notes)
+    {
+        try
+        {
+            updateErrorSt.setInt(3, id);
+            updateErrorSt.setInt(1, solution);
+            updateErrorSt.setString(2, notes);
+            updateErrorSt.executeQuery();
+        } catch (SQLException ex)
+        {
+            Logger.getLogger(CRUD.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
