@@ -34,8 +34,6 @@ import plc.Solution;
 
 public class GUIController implements Initializable, Observer
 {
-
-    private Stage stage;
     private static GUIController instance;
     private Error error;
     private List<Greenhouse> obList;
@@ -82,15 +80,10 @@ public class GUIController implements Initializable, Observer
         greenhouseListView.getItems().addAll(obList);
         greenhouseListView.getSelectionModel().selectedItemProperty().addListener(e ->
         {
-            errorListView.getItems().addAll(PLCController.get().getErrors(greenhouseListView.getSelectionModel().getSelectedItem()));
+            errorListView.setItems(FXCollections.observableArrayList(PLCController.get().getErrors(greenhouseListView.getSelectionModel().getSelectedItem())));
         });
         
-        pane.addEventHandler(EventType.ROOT, (e) ->{
-            if(databaseTab.isSelected())
-            {
-                //Implement the handler and get all the errors from the database.
-            }
-        });
+        
     }
 
     public void removeError(Error e)
@@ -103,10 +96,10 @@ public class GUIController implements Initializable, Observer
     {
         if (arg instanceof Error)
         {
-            errorListView.getItems().addAll(PLCController.get().getErrors(greenhouseListView.getSelectionModel().getSelectedItem()));
+            errorListView.setItems(FXCollections.observableArrayList(PLCController.get().getErrors(greenhouseListView.getSelectionModel().getSelectedItem())));
         } else if (arg instanceof Greenhouse)
         {
-            obList.add((Greenhouse) arg);
+            greenhouseListView.setItems(FXCollections.observableArrayList(PLCController.get().getGreenhouses()));
         }
     }
 
@@ -128,7 +121,7 @@ public class GUIController implements Initializable, Observer
                 {
                     Parent root1 = FXMLLoader.load(getClass().getResource("FXMLHandleError.fxml"));
                     Scene scene = new Scene(root1);
-                    stage = new Stage();
+                    Stage stage = new Stage();
                     stage.initModality(Modality.APPLICATION_MODAL);
                     stage.setScene(scene);
                     stage.show();

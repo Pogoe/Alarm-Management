@@ -11,8 +11,6 @@ public class Greenhouse implements IGreenhouse, ICommands
 {
     private PLCConnection conn;
     private Message mess;
-    private int redLight;
-    private int blueLight;
 
     /**
      * Create greenhouse API
@@ -78,7 +76,6 @@ public class Greenhouse implements IGreenhouse, ICommands
     @Override
     public boolean SetRedLight(int level)
     {
-        redLight = level;
         System.out.println("Set red light to " + level);
         mess = new Message(REDLIGHT_SETPOINT);
         if (level >= 0 && level < 100)
@@ -99,7 +96,6 @@ public class Greenhouse implements IGreenhouse, ICommands
     @Override
     public boolean SetBlueLight(int level)
     {
-        blueLight = level;
         mess = new Message(BLUELIGHT_SETPOINT);
         if (level >= 0 && level < 100)
         {
@@ -382,23 +378,5 @@ public class Greenhouse implements IGreenhouse, ICommands
             return conn.send();
         }
         return false;
-    }
-    
-    @Override
-    public int getRedLight()
-    {
-        return redLight;
-    }
-    
-    @Override
-    public int getBlueLight()
-    {
-        return blueLight;
-    }
-    
-    @Override
-    public void simulate()
-    {
-        
     }
 }

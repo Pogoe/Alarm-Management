@@ -41,10 +41,4 @@ public interface IGreenhouse
     byte[] GetStatus();
 
     boolean SetFanSpeed(int speed);
-    
-    int getRedLight();
-    
-    int getBlueLight();
-    
-    void simulate();
 }
