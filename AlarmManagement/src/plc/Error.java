@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import storage.CRUDController;
@@ -24,7 +25,7 @@ public class Error implements Serializable
         this.errorCode = errorCode;
         this.time = time;
         this.description = description;
-        this.solutions = findSolutions();
+        //this.solutions = findSolutions();
     }
     
     private List<Solution> findSolutions()
@@ -87,7 +88,7 @@ public class Error implements Serializable
             o = o.put("description", description);
             o = o.put("date", time);
             o = o.put("source", source);
-            o = o.put("solutions", solutions);
+            //o = o.put("solutions", new JSONArray(solutions).toString());
         } catch (JSONException ex)
         {
             Logger.getLogger(Error.class.getName()).log(Level.SEVERE, null, ex);

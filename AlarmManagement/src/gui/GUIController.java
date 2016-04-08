@@ -1,6 +1,5 @@
 package gui;
 
-import business.MainController;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -17,7 +16,6 @@ import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.event.ActionEvent;
-import javafx.event.EventType;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -75,15 +73,12 @@ public class GUIController implements Initializable, Observer
     public void initialize(URL url, ResourceBundle rb)
     {
         get();
-        MainController.get().initialize();
         obList = FXCollections.observableArrayList(PLCController.get().getGreenhouses());
         greenhouseListView.getItems().addAll(obList);
         greenhouseListView.getSelectionModel().selectedItemProperty().addListener(e ->
         {
             errorListView.setItems(FXCollections.observableArrayList(PLCController.get().getErrors(greenhouseListView.getSelectionModel().getSelectedItem())));
         });
-        
-        
     }
 
     public void removeError(Error e)

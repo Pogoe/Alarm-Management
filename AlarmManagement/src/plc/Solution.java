@@ -1,5 +1,10 @@
 package plc;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONException;
+import org.json.JSONStringer;
+
 public class Solution
 {
     private int id;
@@ -26,6 +31,27 @@ public class Solution
     public int getErrorCode()
     {
         return errorCode;
+    }
+    
+    public String toJSONString()
+    {
+        JSONStringer s = new JSONStringer();
+        try
+        {
+            s.object();
+            s.key("id");
+            s.value(id);
+            s.key("errorCode");
+            s.value(errorCode);
+            s.key("description");
+            s.value(description);
+            s.endObject();
+        } catch (JSONException ex)
+        {
+            Logger.getLogger(Solution.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return s.toString();
     }
 
     @Override
