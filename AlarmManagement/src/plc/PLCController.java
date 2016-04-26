@@ -30,6 +30,11 @@ public class PLCController extends Observable
         return instance;
     }
     
+    public void initialize()
+    {
+        
+    }
+    
     public void addGreenhouse(Greenhouse g)
     {
         greenhouses.add(g);

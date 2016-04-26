@@ -9,7 +9,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextArea;
 import plc.Solution;
-import storage.CRUDController;
 
 public class ErrorController implements Initializable
 {
@@ -32,7 +31,6 @@ public class ErrorController implements Initializable
     @FXML
     private void solveError(ActionEvent event)
     {
-        CRUDController.get().updateError(GUIController.get().getCurrentError().getId(), solutionBox.getSelectionModel().getSelectedItem().getId(), commentArea.getText());
-        
+        //TODO: Get the error from the server and solve.
     }    
 }

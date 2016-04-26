@@ -1,9 +1,7 @@
 package business;
 
-import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.Observable;
 import java.util.Observer;
 import java.net.HttpURLConnection;
@@ -33,18 +31,17 @@ public class ConnectionController implements Observer
     
     public void sendError(Error e)
     {
-        String json = e.toJSONString();
+        String json = e.toJSONString() + "\n\r";
         try
         {
             if(url == null)
             {
-                url = new URL("http://www.rstougaard.dk/errorHandler");
+                url = new URL("http://127.0.0.1:8080/errorHandler");
             }
             if(conn == null)
             {
                 conn = (HttpURLConnection) url.openConnection();
             }
-            conn.setDoInput(true);
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
@@ -54,11 +51,6 @@ public class ConnectionController implements Observer
             conn.connect();
             output.writeBytes("json=" + URLEncoder.encode(json, "UTF-8"));
             output.flush();
-            BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            while(input.ready())
-            {
-                System.out.println(input.readLine());
-            }
             
             System.out.println(conn.getResponseCode() + " " + conn.getResponseMessage());
         } catch (MalformedURLException ex)
@@ -82,6 +74,6 @@ public class ConnectionController implements Observer
     public static void main(String[] args)
     {
         ConnectionController c = new ConnectionController();
-        c.sendError(new Error(13, 1234, new Date(), "This is a test"));
+        c.sendError(new Error(1234, new Date(), "This is a test"));
     }
 }
