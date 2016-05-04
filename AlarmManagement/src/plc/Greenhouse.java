@@ -316,19 +316,16 @@ public class Greenhouse implements IGreenhouse, ICommands
     private BitSet fillBitSet(byte[] al)
     {
         BitSet alarms = new BitSet(32);
-        if (true)
+        if (al != null && al.length == 4)
         {
-            if (al != null && al.length == 4)
+            for (int i = 0; i < 4; i++)
             {
-                for (int i = 0; i < 4; i++)
+                for (int b = 0; b < 8; b++)
                 {
-                    for (int b = 0; b < 8; b++)
-                    {
-                        int ib = (al[i] >> b) & 0x1;
-                        Boolean bit;
-                        bit = ib == 1;
-                        alarms.set(i * 8 + b, bit);
-                    }
+                    int ib = (al[i] >> b) & 0x1;
+                    Boolean bit;
+                    bit = ib == 1;
+                    alarms.set(i * 8 + b, bit);
                 }
             }
         }
