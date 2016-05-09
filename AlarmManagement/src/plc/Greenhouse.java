@@ -316,9 +316,9 @@ public class Greenhouse implements IGreenhouse, ICommands
     private BitSet fillBitSet(byte[] al)
     {
         BitSet alarms = new BitSet(32);
-        if (al != null && al.length == 4)
+        if (al != null)
         {
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < al.length; i++)
             {
                 for (int b = 0; b < 8; b++)
                 {
