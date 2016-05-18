@@ -9,7 +9,7 @@ abstract public class PLCConnection
 {
     protected Message mess;
 
-    abstract public boolean send();
+    public abstract boolean send();
 
     /**
      * Add message
