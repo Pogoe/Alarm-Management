@@ -85,6 +85,11 @@ public class GUIController implements Initializable, Observer
     {
         errorListView.getItems().remove(e);
     }
+    
+    public void setError(Error e)
+    {
+        error = e;
+    }
 
     @Override
     public void update(Observable o, Object arg)
@@ -108,7 +113,7 @@ public class GUIController implements Initializable, Observer
     {
         if (errorListView.getSelectionModel().getSelectedItem() != null)
         {
-            error = errorListView.getSelectionModel().getSelectedItem();
+            GUIController.get().setError(errorListView.getSelectionModel().getSelectedItem());
             String s = JOptionPane.showInputDialog("Check", "Please enter admin password");
             if (s.equals("1234"))
             {

@@ -25,7 +25,7 @@ public class ErrorController implements Initializable
     public void initialize(URL url, ResourceBundle rb)
     {
         //solutionBox.getItems().addAll(GUIController.get().getCurrentError().getSolutions());
-        //displayError.setText(GUIController.get().getCurrentError().toString());
+        displayError.setText(GUIController.get().getCurrentError().toString());
     }    
 
     @FXML

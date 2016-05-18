@@ -34,7 +34,7 @@ public interface IGreenhouse
 
     double ReadPlantHeight();
 
-    BitSet ReadErrors();
+    byte[] ReadErrors();
 
     boolean ResetError(int errorNum);
 

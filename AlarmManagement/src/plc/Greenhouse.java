@@ -297,19 +297,18 @@ public class Greenhouse implements IGreenhouse, ICommands
      * @return Alarms as BitSet
      */
     @Override
-    public BitSet ReadErrors()
+    public byte[] ReadErrors()
     {
         System.out.println("Get all alarms ");
         mess = new Message(READ_ALL_ALARMS);
-        BitSet alarms = new BitSet(32);
+        byte[] alarms = new byte[32];
 
         mess.setData(); //None data
         conn.addMessage(mess);
         if (conn.send())
         {
-            alarms = fillBitSet(mess.getResultData());
+            alarms = mess.getResultData();
         }
-        System.out.println("Alarm state is: " + alarms);
         return alarms;
     }
 
@@ -375,5 +374,11 @@ public class Greenhouse implements IGreenhouse, ICommands
             return conn.send();
         }
         return false;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "Greenhouse at " + conn.getIp();
     }
 }

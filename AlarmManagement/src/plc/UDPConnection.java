@@ -186,4 +186,9 @@ public class UDPConnection extends PLCConnection implements IMessage
         this.adr = adr;
     }
 
+    @Override
+    public String getIp()
+    {
+        return adr.getHostAddress();
+    }
 }

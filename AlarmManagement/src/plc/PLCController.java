@@ -1,7 +1,7 @@
 package plc;
 
+import business.ConnectionController;
 import gui.GUIController;
-import java.util.BitSet;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
@@ -9,17 +9,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Observable;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class PLCController extends Observable
 {
     private static PLCController instance;
+    private Map<Integer, ErrorType> errorTypes;
     private List<Greenhouse> greenhouses;
     private Map<Greenhouse, List<Error>> errors;
+    private Thread t;
 
     private PLCController()
     {
         this.greenhouses = Collections.synchronizedList(new LinkedList<>());
         this.errors = new ConcurrentHashMap<>();
+        this.errorTypes = new ConcurrentHashMap<>();
         addObserver(GUIController.get());
     }
 
@@ -42,20 +47,23 @@ public class PLCController extends Observable
         PLCController.get().addGreenhouse(new Greenhouse(con1));
         PLCController.get().addGreenhouse(new Greenhouse(con2));
         PLCController.get().addGreenhouse(new Greenhouse(con3));
+        
+        errorTypes = ConnectionController.get().getErrors();
+        checkForErrors();
     }
 
     public void addGreenhouse(Greenhouse g)
     {
         greenhouses.add(g);
         errors.put(g, new LinkedList<>());
-        //notifyObservers(g);
+        notifyObservers(g);
     }
 
     public void removeGreenhouse(Greenhouse g)
     {
         greenhouses.remove(g);
         errors.remove(g);
-        //notifyObservers(g);
+        notifyObservers(g);
     }
 
     public List<Greenhouse> getGreenhouses()
@@ -65,23 +73,35 @@ public class PLCController extends Observable
 
     public void checkForErrors()
     {
-        synchronized (greenhouses)
-        {
-            greenhouses.stream().forEach((g) ->
+        t = new Thread(() ->{
+            while(true)
             {
-                System.out.println("Checking greenhouse " + g.toString());
-                BitSet bs = g.ReadErrors();
-                System.out.println(bs.length());
-                for(int i = 0; i < bs.length(); i++)
+                greenhouses.parallelStream().forEach((g) ->
                 {
-                    if(bs.get(i))
+                    System.out.println("Checking: " + g.toString());
+                    byte[] errorArray = g.ReadErrors();
+                    for(int i = 0; i < errorArray.length; i++)
                     {
-                        System.out.println("Found error " + i + "!");
-                        addError(g, new Error(i + 1, new Date(), "We have made a new error! Cheers!"));
+                        if(errorArray[i] != 0)
+                        {
+                            ErrorType type = errorTypes.get(i);
+                            Error e = new Error(new Date(), type);
+                            if(!getErrors(g).contains(e))
+                            {
+                                addError(g, e);
+                                System.out.println("Found error: " + type.toString());
+                            }
+                        }
                     }
+                });
+                try {
+                    Thread.sleep(2000);
+                } catch (InterruptedException ex) {
+                    Logger.getLogger(PLCController.class.getName()).log(Level.SEVERE, null, ex);
                 }
-            });
-        }
+            }
+        });
+        t.start();
     }
 
     public void addError(Greenhouse g, Error e)
@@ -100,18 +120,5 @@ public class PLCController extends Observable
     public List<Error> getErrors(Greenhouse g)
     {
         return errors.get(g);
-    }
-    
-    public static void main(String[] args)
-    {
-        PLCConnection con1 = new UDPConnection(5000, "192.168.0.20");
-        PLCConnection con2 = new UDPConnection(5000, "192.168.0.30");
-        PLCConnection con3 = new UDPConnection(5000, "192.168.0.40");
-        
-        PLCController.get().addGreenhouse(new Greenhouse(con1));
-        PLCController.get().addGreenhouse(new Greenhouse(con2));
-        PLCController.get().addGreenhouse(new Greenhouse(con3));
-        
-        PLCController.get().checkForErrors();
     }
 }

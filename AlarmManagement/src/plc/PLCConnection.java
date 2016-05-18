@@ -20,4 +20,6 @@ abstract public class PLCConnection
     {
         mess = m;
     }
+    
+    public abstract String getIp();
 }
