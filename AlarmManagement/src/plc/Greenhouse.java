@@ -1,24 +1,9 @@
 package plc;
 
-import java.util.BitSet;
-
-/**
- * API to communicate to the PLC
- *
- * @author Steffen Skov
- */
 public class Greenhouse implements IGreenhouse, ICommands
 {
     private PLCConnection conn;
     private Message mess;
-
-    /**
-     * Create greenhouse API
-     */
-    public Greenhouse()
-    {
-
-    }
 
     /**
      * Create greenhouse API
@@ -122,32 +107,6 @@ public class Greenhouse implements IGreenhouse, ICommands
             return conn.send();
         }
         return false;
-    }
-
-    /**
-     * NOT IMPLEMENTED Add Fertiliser for some seconds. Pump is stopped if
-     * height of water is exceeded CMD: 6
-     *
-     * @param sec : Secord to turn on the pump
-     * @return true if processed
-     */
-    @Override
-    public boolean AddFertiliser(int sec)
-    {
-        return true;
-    }
-
-    /**
-     * NOT IMPLEMENTED Add CO2 for some seconds. Pump is stopped if height of
-     * water is exceeded CMD: 7
-     *
-     * @param sec : Seconds to turn on the valve
-     * @return true if processed
-     */
-    @Override
-    public boolean AddCO2(int sec)
-    {
-        return true;
     }
 
     /**
@@ -301,59 +260,13 @@ public class Greenhouse implements IGreenhouse, ICommands
     {
         System.out.println("Get all alarms ");
         mess = new Message(READ_ALL_ALARMS);
-        byte[] alarms = new byte[32];
-
         mess.setData(); //None data
         conn.addMessage(mess);
         if (conn.send())
         {
-            alarms = mess.getResultData();
+            return mess.getResultData();
         }
-        return alarms;
-    }
-
-    private BitSet fillBitSet(byte[] al)
-    {
-        BitSet alarms = new BitSet(32);
-        if (al != null)
-        {
-            for (int i = 0; i < al.length; i++)
-            {
-                for (int b = 0; b < 8; b++)
-                {
-                    int ib = (al[i] >> b) & 0x1;
-                    Boolean bit;
-                    bit = ib == 1;
-                    alarms.set(i * 8 + b, bit);
-                }
-            }
-        }
-        System.out.println("Alarms in set state: " + alarms);
-        return alarms;
-    }
-
-    /**
-     * Reset one alarm CMD: 14
-     *
-     * @param errorNum
-     * @return Done
-     */
-    @Override
-    public boolean ResetError(int errorNum)
-    {
-        return true;
-    }
-
-    /**
-     * Get all values as a byte array CMD: 15
-     *
-     * @return All values
-     */
-    @Override
-    public byte[] GetStatus()
-    {
-        byte[] result = null;
-        return result;
+        return mess.getResultData();
     }
 
     /**

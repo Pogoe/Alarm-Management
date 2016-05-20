@@ -1,10 +1,5 @@
 package plc;
 
-/**
- * List of PLC commands
- *
- * @author Steffen Skov
- */
 public interface ICommands
 {
     final byte NO_CMD = 0;
@@ -14,8 +9,6 @@ public interface ICommands
     final byte BLUELIGHT_SETPOINT = 4;
     final byte START_WATER_PUMP = 5;
     final byte ADDWATER = 6;
-    final byte ADDFERTILISER = 7; // Not implemented
-    final byte ADDCO2 = 8; // Not implemented
     final byte READ_GREENHOUSE_TEMP = 9;
     final byte READ_OUTDOOR_TEMP = 10;
     final byte READ_MOISTURE = 11;
@@ -45,5 +38,4 @@ public interface ICommands
     final byte GET_STATUS_ACK = 79;
     final byte SET_FAN_SPEED_ACK = 80;
     final byte READ_WATER_LEVEL_ACK = 81;
-
 }

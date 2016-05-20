@@ -15,8 +15,9 @@ public class Error
     private Date time;
     private Greenhouse source;
     
-    public Error(int errorCode, Date time, String description)
+    public Error(int id, int errorCode, Date time, String description)
     {
+        this.id = id;
         this.errorCode = errorCode;
         this.time = time;
         this.description = description;

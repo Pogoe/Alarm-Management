@@ -109,11 +109,8 @@ public class UDPConnection extends PLCConnection implements IMessage
         {
             p = mess.packMessage();
             DatagramPacket packet = new DatagramPacket(p, 0, p.length, adr, port);
-
-            //socket = new DatagramSocket(port, adr);// to test with local host
             socket = new DatagramSocket();
 
-            //System.out.println("Packet content:" + packet);
             socket.send(packet);
             socket.setSoTimeout(5000); //wait for answar max. 1 sec.
             socket.receive(answerDP);
@@ -121,7 +118,6 @@ public class UDPConnection extends PLCConnection implements IMessage
             mess.answer = a;
             if (a[DIRECTION] == FROMPLC) // Dicard own message
             {
-                System.out.println("Data recieved:" + answerDP.getLength() + " byte " + a[0] + "," + a[1] + "," + a[2] + "," + a[3] + "," + a[10] + ".....");
                 if (!mess.answerIsValid())
                 {
                     mess.answer = answerDP.getData();
@@ -147,10 +143,6 @@ public class UDPConnection extends PLCConnection implements IMessage
         {
             System.out.println("IOException");
             return false;
-        } catch (Exception e)
-        {
-            System.out.println(e);
-            return false;
         }
         finally
         {
@@ -159,7 +151,6 @@ public class UDPConnection extends PLCConnection implements IMessage
                 socket.close();
             }
         }
-
     }
 
     /**

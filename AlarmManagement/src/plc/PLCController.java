@@ -73,7 +73,7 @@ public class PLCController extends Observable
 
     public void checkForErrors()
     {
-        t = new Thread(() ->{
+        t = new Thread(() -> {
             while(true)
             {
                 greenhouses.parallelStream().forEach((g) ->

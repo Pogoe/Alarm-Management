@@ -26,7 +26,7 @@ public class ConnectionController implements Observer
     private URL sendErrorURL;
     private URL getErrorCodesURL;
     
-    public ConnectionController() throws MalformedURLException
+    private ConnectionController() throws MalformedURLException
     {
         sendErrorURL = new URL("http://127.0.0.1:8080/errorHandler");
         getErrorCodesURL = new URL("http://127.0.0.1:8080/getErrorsToJava");
@@ -56,6 +56,7 @@ public class ConnectionController implements Observer
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
             conn.setRequestProperty("json", URLEncoder.encode(json));
+            conn.setDefaultUseCaches(false);
             DataOutputStream output = new DataOutputStream(conn.getOutputStream());
             
             conn.connect();
@@ -75,12 +76,14 @@ public class ConnectionController implements Observer
     public Map<Integer, ErrorType> getErrors()
     {
         Map<Integer, ErrorType> errors = new HashMap<>();
-        try {
+        try
+        {
             HttpURLConnection conn = (HttpURLConnection) getErrorCodesURL.openConnection();
             
             conn.setDoInput(true);
             conn.setDoOutput(true);
             conn.setRequestMethod("GET");
+            conn.setDefaultUseCaches(false);
             conn.connect();
             
             BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream()));

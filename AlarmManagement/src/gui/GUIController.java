@@ -73,22 +73,22 @@ public class GUIController implements Initializable, Observer
     public void initialize(URL url, ResourceBundle rb)
     {
         get();
-        obList = FXCollections.observableArrayList(PLCController.get().getGreenhouses());
-        greenhouseListView.getItems().addAll(obList);
-        greenhouseListView.getSelectionModel().selectedItemProperty().addListener(e ->
+        GUIController.get().obList = FXCollections.observableArrayList(PLCController.get().getGreenhouses());
+        GUIController.get().greenhouseListView.getItems().addAll(GUIController.get().obList);
+        GUIController.get().greenhouseListView.getSelectionModel().selectedItemProperty().addListener(e ->
         {
-            errorListView.setItems(FXCollections.observableArrayList(PLCController.get().getErrors(greenhouseListView.getSelectionModel().getSelectedItem())));
+            GUIController.get().errorListView.setItems(FXCollections.observableArrayList(PLCController.get().getErrors(GUIController.get().greenhouseListView.getSelectionModel().getSelectedItem())));
         });
     }
 
     public void removeError(Error e)
     {
-        errorListView.getItems().remove(e);
+        GUIController.get().errorListView.getItems().remove(e);
     }
     
     public void setError(Error e)
     {
-        error = e;
+        GUIController.get().error = e;
     }
 
     @Override
@@ -96,24 +96,24 @@ public class GUIController implements Initializable, Observer
     {
         if (arg instanceof Error)
         {
-            errorListView.setItems(FXCollections.observableArrayList(PLCController.get().getErrors(greenhouseListView.getSelectionModel().getSelectedItem())));
+            GUIController.get().errorListView.setItems(FXCollections.observableArrayList(PLCController.get().getErrors(GUIController.get().greenhouseListView.getSelectionModel().getSelectedItem())));
         } else if (arg instanceof Greenhouse)
         {
-            greenhouseListView.setItems(FXCollections.observableArrayList(PLCController.get().getGreenhouses()));
+            GUIController.get().greenhouseListView.setItems(FXCollections.observableArrayList(PLCController.get().getGreenhouses()));
         }
     }
 
     public Error getCurrentError()
     {
-        return error;
+        return GUIController.get().error;
     }
 
     @FXML
     private void handleErrorAction(ActionEvent event)
     {
-        if (errorListView.getSelectionModel().getSelectedItem() != null)
+        if (GUIController.get().errorListView.getSelectionModel().getSelectedItem() != null)
         {
-            GUIController.get().setError(errorListView.getSelectionModel().getSelectedItem());
+            GUIController.get().setError(GUIController.get().errorListView.getSelectionModel().getSelectedItem());
             String s = JOptionPane.showInputDialog("Check", "Please enter admin password");
             if (s.equals("1234"))
             {
@@ -131,15 +131,5 @@ public class GUIController implements Initializable, Observer
                 }
             }
         }
-    }
-
-    @FXML
-    private void newError(ActionEvent event)
-    {
-    }
-
-    @FXML
-    private void newSolution(ActionEvent event)
-    {
     }
 }

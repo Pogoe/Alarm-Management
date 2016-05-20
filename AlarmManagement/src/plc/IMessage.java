@@ -1,10 +1,5 @@
 package plc;
 
-/**
- * Protocol structure
- *
- * @author Steffen Skov
- */
 public interface IMessage
 {
     // direction defination
@@ -26,5 +21,4 @@ public interface IMessage
     // Data
     final int DATA_START = 10;
     final int MAX_DATA = 100 + DATA_START;
-
 }
