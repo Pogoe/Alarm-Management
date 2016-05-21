@@ -28,7 +28,7 @@ public class SolutionTest
     @Test
     public void testGetId()
     {
-        System.out.println("getId");
+        System.out.println(this.getClass() + ": getId");
         int expResult = 1;
         int result = instance.getId();
         assertEquals(expResult, result);
@@ -40,7 +40,7 @@ public class SolutionTest
     @Test
     public void testSetId()
     {
-        System.out.println("setId");
+        System.out.println(this.getClass() + ": setId");
         int id = 0;
         instance.setId(id);
         assertEquals(id, instance.getId());
@@ -52,7 +52,7 @@ public class SolutionTest
     @Test
     public void testGetErrorCode()
     {
-        System.out.println("getErrorCode");
+        System.out.println(this.getClass() + ": getErrorCode");
         int expResult = 1;
         int result = instance.getErrorCode();
         assertEquals(expResult, result);

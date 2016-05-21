@@ -20,7 +20,7 @@ public class ErrorTypeTest
     @Test
     public void testGetErrorCode()
     {
-        System.out.println("getErrorCode");
+        System.out.println(this.getClass() + ": getErrorCode");
         int expResult = 1234;
         int result = instance.getErrorCode();
         assertEquals(expResult, result);
@@ -32,7 +32,7 @@ public class ErrorTypeTest
     @Test
     public void testGetDescription()
     {
-        System.out.println("getDescription");
+        System.out.println(this.getClass() + ": getDescription");
         String expResult = "Hej med dig";
         String result = instance.getDescription();
         assertEquals(expResult, result);
@@ -44,7 +44,7 @@ public class ErrorTypeTest
     @Test
     public void testHashCode()
     {
-        System.out.println("hashCode");
+        System.out.println(this.getClass() + ": hashCode");
         ErrorType instance2 = new ErrorType(1234, "Hej med dig");
         assertEquals(instance.hashCode(), instance2.hashCode());
     }
@@ -55,7 +55,7 @@ public class ErrorTypeTest
     @Test
     public void testEquals()
     {
-        System.out.println("equals");
+        System.out.println(this.getClass() + ": equals");
         Object obj = new ErrorType(1234, "Hej med dig");
         boolean expResult = true;
         boolean result = instance.equals(obj);
