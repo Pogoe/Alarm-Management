@@ -48,7 +48,7 @@ public class PLCController extends Observable
         PLCController.get().addGreenhouse(new Greenhouse(con2));
         PLCController.get().addGreenhouse(new Greenhouse(con3));
         
-        errorTypes = ConnectionController.get().getErrors();
+        errorTypes = ConnectionController.get().getErrorTypes();
         checkForErrors();
     }
 

@@ -33,6 +33,11 @@ public class Solution
         return errorCode;
     }
     
+    public String getDescription()
+    {
+        return description;
+    }
+    
     public String toJSONString()
     {
         JSONStringer s = new JSONStringer();

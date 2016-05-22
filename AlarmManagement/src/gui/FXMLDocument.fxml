@@ -42,21 +42,20 @@
               <content>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                      <children>
-                        <TableView fx:id="errorTable" layoutX="14.0" layoutY="14.0" prefHeight="400.0" prefWidth="292.0">
+                        <TableView fx:id="errorTable" layoutX="14.0" layoutY="14.0" prefHeight="400.0" prefWidth="292.0" editable="true">
                           <columns>
                             <TableColumn fx:id="errorTableCode" editable="false" prefWidth="64.0" text="Error code" />
                             <TableColumn fx:id="errorTableDescription" editable="false" minWidth="0.0" prefWidth="227.0" text="Description" />
                           </columns>
                         </TableView>
-                        <TableView fx:id="solutionTable" layoutX="320.0" layoutY="14.0" prefHeight="400.0" prefWidth="309.0">
+                        <TableView fx:id="solutionTable" layoutX="320.0" layoutY="14.0" prefHeight="400.0" prefWidth="309.0" editable="true">
                           <columns>
                             <TableColumn fx:id="solutionTableId" editable="false" prefWidth="36.0" text="Id" />
                             <TableColumn fx:id="solutionTableCode" editable="false" prefWidth="82.0" text="error code" />
                               <TableColumn fx:id="solutionTableDescritption" editable="false" prefWidth="190.0" text="Description" />
                           </columns>
                         </TableView>
-                        <Button fx:id="newErrorBtn" layoutX="14.0" layoutY="414.0" mnemonicParsing="false" onAction="#newErrorType" text="New Error Type" />
-                        <Button fx:id="newSolutionBtn" layoutX="320.0" layoutY="414.0" mnemonicParsing="false" onAction="#newSolution" text="New Solution" />
+                        <Button fx:id="newErrorBtn" layoutX="14.0" layoutY="414.0" mnemonicParsing="false" onAction="#updateTables" text="Update" />
                      </children></AnchorPane>
               </content>
             </Tab>

@@ -1,7 +1,9 @@
 package gui;
 
+import business.ConnectionController;
 import java.io.IOException;
 import java.net.URL;
+import java.util.LinkedList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -27,7 +29,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-import javax.swing.JOptionPane;
+import plc.ErrorType;
 import plc.Solution;
 
 public class GUIController implements Initializable, Observer
@@ -44,11 +46,11 @@ public class GUIController implements Initializable, Observer
     @FXML
     private Button handleErrorButton, newErrorBtn, newSolutionBtn;
     @FXML
-    private TableView<Error> errorTable;
+    private TableView<ErrorType> errorTable;
     @FXML
-    private TableColumn<Error, Integer> errorTableCode;
+    private TableColumn<ErrorType, Integer> errorTableCode;
     @FXML
-    private TableColumn<Error, String> errorTableDescription;
+    private TableColumn<ErrorType, String> errorTableDescription;
     @FXML
     private TableView<Solution> solutionTable;
     @FXML
@@ -72,10 +74,9 @@ public class GUIController implements Initializable, Observer
     @Override
     public void initialize(URL url, ResourceBundle rb)
     {
-        get();
         GUIController.get().obList = FXCollections.observableArrayList(PLCController.get().getGreenhouses());
         GUIController.get().greenhouseListView.getItems().addAll(GUIController.get().obList);
-        GUIController.get().greenhouseListView.getSelectionModel().selectedItemProperty().addListener(e ->
+        GUIController.get().greenhouseListView.getSelectionModel().selectedItemProperty().addListener(listener ->
         {
             GUIController.get().errorListView.setItems(FXCollections.observableArrayList(PLCController.get().getErrors(GUIController.get().greenhouseListView.getSelectionModel().getSelectedItem())));
         });
@@ -83,14 +84,49 @@ public class GUIController implements Initializable, Observer
 
     public void removeError(Error e)
     {
-        GUIController.get().errorListView.getItems().remove(e);
+        errorListView.getItems().remove(e);
     }
     
     public void setError(Error e)
     {
-        GUIController.get().error = e;
+        error = e;
     }
 
+    public Error getCurrentError()
+    {
+        return error;
+    }
+
+    @FXML
+    private void handleErrorAction(ActionEvent event)
+    {
+        if (GUIController.get().errorListView.getSelectionModel().getSelectedItem() != null)
+        {
+            GUIController.get().setError(GUIController.get().errorListView.getSelectionModel().getSelectedItem());
+            
+            try
+            {
+                Parent root = FXMLLoader.load(getClass().getResource("FXMLHandleError.fxml"));
+                Scene scene = new Scene(root);
+                Stage stage = new Stage();
+                stage.initModality(Modality.APPLICATION_MODAL);
+                stage.setScene(scene);
+                stage.show();
+            } catch (IOException ex)
+            {
+                Logger.getLogger(GUIController.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
+    
+    @FXML
+    private void updateTables(ActionEvent event)
+    {
+        ConnectionController.get().update(errorTable.getItems(), solutionTable.getItems());
+        errorTable.setItems(FXCollections.observableArrayList(ConnectionController.get().getErrorTypes().values()));
+        solutionTable.setItems(FXCollections.observableArrayList(ConnectionController.get().getSolutions()));
+    }
+    
     @Override
     public void update(Observable o, Object arg)
     {
@@ -101,47 +137,5 @@ public class GUIController implements Initializable, Observer
         {
             GUIController.get().greenhouseListView.setItems(FXCollections.observableArrayList(PLCController.get().getGreenhouses()));
         }
-    }
-
-    public Error getCurrentError()
-    {
-        return GUIController.get().error;
-    }
-
-    @FXML
-    private void handleErrorAction(ActionEvent event)
-    {
-        if (GUIController.get().errorListView.getSelectionModel().getSelectedItem() != null)
-        {
-            GUIController.get().setError(GUIController.get().errorListView.getSelectionModel().getSelectedItem());
-            String s = JOptionPane.showInputDialog("Check", "Please enter admin password");
-            if (s.equals("1234"))
-            {
-                try
-                {
-                    Parent root1 = FXMLLoader.load(getClass().getResource("FXMLHandleError.fxml"));
-                    Scene scene = new Scene(root1);
-                    Stage stage = new Stage();
-                    stage.initModality(Modality.APPLICATION_MODAL);
-                    stage.setScene(scene);
-                    stage.show();
-                } catch (IOException ex)
-                {
-                    Logger.getLogger(GUIController.class.getName()).log(Level.SEVERE, null, ex);
-                }
-            }
-        }
-    }
-    
-    @FXML
-    private void newErrorType(ActionEvent event)
-    {
-        
-    }
-    
-    @FXML
-    private void newSolution(ActionEvent event)
-    {
-        
     }
 }

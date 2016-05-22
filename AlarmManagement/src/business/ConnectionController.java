@@ -11,6 +11,8 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,17 +21,20 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import plc.Error;
 import plc.ErrorType;
+import plc.Solution;
 
 public class ConnectionController implements Observer
 {
     private static ConnectionController instance;
     private URL sendErrorURL;
     private URL getErrorCodesURL;
+    private URL updateDatabaseURL;
     
     private ConnectionController() throws MalformedURLException
     {
         sendErrorURL = new URL("http://127.0.0.1:8080/errorHandler");
         getErrorCodesURL = new URL("http://127.0.0.1:8080/getErrorsToJava");
+        updateDatabaseURL = new URL("http://127.0.0.1:8080/updateDatabase");
     }
         
     public static ConnectionController get()
@@ -73,7 +78,7 @@ public class ConnectionController implements Observer
         }
     }
     
-    public Map<Integer, ErrorType> getErrors()
+    public Map<Integer, ErrorType> getErrorTypes()
     {
         Map<Integer, ErrorType> errors = new HashMap<>();
         try
@@ -109,22 +114,40 @@ public class ConnectionController implements Observer
         return errors;
     }
     
-    public void addErrorType(ErrorType type)
+    public void update(List<ErrorType> types, List<Solution> solutions)
     {
-        String json = type.toJSONString();
+        List<ErrorType> newTypes = new LinkedList<>();
+        List<Solution> newSolutions = new LinkedList<>();
+        
+        types.parallelStream().filter((type) ->
+                (type.getErrorCode() != 0 && !type.getDescription().equals(""))).forEach((type) ->
+        {
+            newTypes.add(type);
+        });
+        solutions.parallelStream().filter((solution) ->
+                (solution.getErrorCode() != 0 && solution.getId() != 0 && !solution.getDescription().equals(""))).forEach((solution) ->
+        {
+           newSolutions.add(solution);
+        });
+        
+        String typesJson = new JSONArray(newTypes).toString();
+        String solutionsJson = new JSONArray(newSolutions).toString();
+        
         try
         {
-            HttpURLConnection conn = (HttpURLConnection) sendErrorURL.openConnection();
+            HttpURLConnection conn = (HttpURLConnection) updateDatabaseURL.openConnection();
             
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
-            conn.setRequestProperty("json", URLEncoder.encode(json));
+            conn.setRequestProperty("errorTypes", URLEncoder.encode(typesJson));
+            conn.setRequestProperty("solutions", URLEncoder.encode(solutionsJson));
             conn.setDefaultUseCaches(false);
             DataOutputStream output = new DataOutputStream(conn.getOutputStream());
             
             conn.connect();
-            output.writeBytes("json=" + URLEncoder.encode(json, "UTF-8"));
+            output.writeBytes("errortypes=" + URLEncoder.encode(typesJson, "UTF-8"));
+            output.writeBytes("solutions=" + URLEncoder.encode(solutionsJson, "UTF-8"));
             output.flush();
         } catch (MalformedURLException ex)
         {
@@ -133,6 +156,12 @@ public class ConnectionController implements Observer
         {
             Logger.getLogger(ConnectionController.class.getName()).log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public List<Solution> getSolutions()
+    {
+        List<Solution> l = new LinkedList<>();
+        return l;
     }
 
     @Override
