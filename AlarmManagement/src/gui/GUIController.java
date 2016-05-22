@@ -134,7 +134,7 @@ public class GUIController implements Initializable, Observer
     }
     
     @FXML
-    private void newError(ActionEvent event)
+    private void newErrorType(ActionEvent event)
     {
         
     }

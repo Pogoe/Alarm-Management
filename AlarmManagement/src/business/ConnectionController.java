@@ -108,6 +108,32 @@ public class ConnectionController implements Observer
         
         return errors;
     }
+    
+    public void addErrorType(ErrorType type)
+    {
+        String json = type.toJSONString();
+        try
+        {
+            HttpURLConnection conn = (HttpURLConnection) sendErrorURL.openConnection();
+            
+            conn.setDoOutput(true);
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
+            conn.setRequestProperty("json", URLEncoder.encode(json));
+            conn.setDefaultUseCaches(false);
+            DataOutputStream output = new DataOutputStream(conn.getOutputStream());
+            
+            conn.connect();
+            output.writeBytes("json=" + URLEncoder.encode(json, "UTF-8"));
+            output.flush();
+        } catch (MalformedURLException ex)
+        {
+            Logger.getLogger(ConnectionController.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex)
+        {
+            Logger.getLogger(ConnectionController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     @Override
     public void update(Observable o, Object arg)

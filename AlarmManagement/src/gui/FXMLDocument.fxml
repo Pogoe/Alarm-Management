@@ -55,7 +55,7 @@
                               <TableColumn fx:id="solutionTableDescritption" editable="false" prefWidth="190.0" text="Description" />
                           </columns>
                         </TableView>
-                        <Button fx:id="newErrorBtn" layoutX="14.0" layoutY="414.0" mnemonicParsing="false" onAction="#newError" text="New Error" />
+                        <Button fx:id="newErrorBtn" layoutX="14.0" layoutY="414.0" mnemonicParsing="false" onAction="#newErrorType" text="New Error Type" />
                         <Button fx:id="newSolutionBtn" layoutX="320.0" layoutY="414.0" mnemonicParsing="false" onAction="#newSolution" text="New Solution" />
                      </children></AnchorPane>
               </content>

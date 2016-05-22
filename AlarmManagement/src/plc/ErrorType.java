@@ -1,6 +1,10 @@
 package plc;
 
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ErrorType
 {
@@ -24,7 +28,8 @@ public class ErrorType
     }
 
     @Override
-    public int hashCode() {
+    public int hashCode()
+    {
         int hash = 7;
         hash = 97 * hash + this.errorCode;
         hash = 97 * hash + Objects.hashCode(this.description);
@@ -32,7 +37,8 @@ public class ErrorType
     }
 
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(Object obj)
+    {
         if (this == obj) {
             return true;
         }
@@ -50,6 +56,21 @@ public class ErrorType
             return false;
         }
         return true;
+    }
+    
+    public String toJSONString()
+    {
+        JSONObject json = new JSONObject();
+        try
+        {
+            json.put("errorCode", errorCode);
+            json.put("description", description);
+        } catch (JSONException ex)
+        {
+            Logger.getLogger(ErrorType.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return json.toString();
     }
     
     @Override
