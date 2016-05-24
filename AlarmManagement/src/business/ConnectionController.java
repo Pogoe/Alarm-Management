@@ -34,7 +34,7 @@ public class ConnectionController implements Observer
     {
         sendErrorURL = new URL("http://127.0.0.1:8080/errorHandler");
         getErrorCodesURL = new URL("http://127.0.0.1:8080/getErrorsToJava");
-        updateDatabaseURL = new URL("http://127.0.0.1:8080/updateDatabase");
+        updateDatabaseURL = new URL("http://127.0.0.1:8080/updateTemplate");
     }
         
     public static ConnectionController get()
@@ -62,13 +62,13 @@ public class ConnectionController implements Observer
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
             conn.setRequestProperty("json", URLEncoder.encode(json));
             conn.setDefaultUseCaches(false);
-            DataOutputStream output = new DataOutputStream(conn.getOutputStream());
-            
             conn.connect();
-            output.writeBytes("json=" + URLEncoder.encode(json, "UTF-8"));
-            output.flush();
             
-            System.out.println(conn.getResponseCode() + " " + conn.getResponseMessage());
+            try (DataOutputStream output = new DataOutputStream(conn.getOutputStream()))
+            {
+                output.writeBytes("json=" + URLEncoder.encode(json, "UTF-8"));
+                output.flush();
+            }
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(ConnectionController.class.getName()).log(Level.SEVERE, null, ex);
@@ -86,24 +86,29 @@ public class ConnectionController implements Observer
             HttpURLConnection conn = (HttpURLConnection) getErrorCodesURL.openConnection();
             
             conn.setDoInput(true);
-            conn.setDoOutput(true);
             conn.setRequestMethod("GET");
             conn.setDefaultUseCaches(false);
             conn.connect();
             
-            BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while((line = input.readLine()) != null)
+            StringBuilder sb;
+            try (BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream())))
             {
-                sb.append(line);
+                sb = new StringBuilder();
+                String line;
+                while((line = input.readLine()) != null)
+                {
+                    sb.append(line);
+                }
             }
-            JSONArray ja = new JSONArray(sb.toString());
             
-            for(int i = 0; i < ja.length(); i++)
+            if(sb.length() > 0)
             {
-                JSONObject o = ja.getJSONObject(i);
-                errors.put(i, new ErrorType(o.getInt("errorcode"), o.getString("description")));
+                JSONArray ja = new JSONArray(sb.toString());
+                for(int i = 0; i < ja.length(); i++)
+                {
+                    JSONObject o = ja.getJSONObject(i);
+                    errors.put(i, new ErrorType(o.getInt("errorcode"), o.getString("description")));
+                }
             }
         } catch (MalformedURLException ex) {
             Logger.getLogger(ConnectionController.class.getName()).log(Level.SEVERE, null, ex);
@@ -124,8 +129,9 @@ public class ConnectionController implements Observer
         {
             newTypes.add(type);
         });
+        
         solutions.parallelStream().filter((solution) ->
-                (solution.getErrorCode() != 0 && solution.getId() != 0 && !solution.getDescription().equals(""))).forEach((solution) ->
+                (solution.getErrorCode() != 0 && !solution.getDescription().equals(""))).forEach((solution) ->
         {
            newSolutions.add(solution);
         });
@@ -143,12 +149,14 @@ public class ConnectionController implements Observer
             conn.setRequestProperty("errorTypes", URLEncoder.encode(typesJson));
             conn.setRequestProperty("solutions", URLEncoder.encode(solutionsJson));
             conn.setDefaultUseCaches(false);
-            DataOutputStream output = new DataOutputStream(conn.getOutputStream());
             
-            conn.connect();
-            output.writeBytes("errortypes=" + URLEncoder.encode(typesJson, "UTF-8"));
-            output.writeBytes("solutions=" + URLEncoder.encode(solutionsJson, "UTF-8"));
-            output.flush();
+            try (DataOutputStream output = new DataOutputStream(conn.getOutputStream()))
+            {
+                conn.connect();
+                output.writeBytes("errortypes=" + URLEncoder.encode(typesJson, "UTF-8"));
+                output.writeBytes("solutions=" + URLEncoder.encode(solutionsJson, "UTF-8"));
+                output.flush();
+            }
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(ConnectionController.class.getName()).log(Level.SEVERE, null, ex);

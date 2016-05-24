@@ -1,5 +1,7 @@
 package plc;
 
+import java.util.Objects;
+
 public class Greenhouse implements IGreenhouse, ICommands
 {
     private PLCConnection conn;
@@ -15,6 +17,11 @@ public class Greenhouse implements IGreenhouse, ICommands
         this.conn = c;
     }
 
+    public PLCConnection getConnection()
+    {
+        return conn;
+    }
+    
     /**
      * Setpoint for temperature inside Greenhouse CMD: 1
      *
@@ -294,4 +301,32 @@ public class Greenhouse implements IGreenhouse, ICommands
     {
         return "Greenhouse at " + conn.getIp();
     }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 23 * hash + Objects.hashCode(this.conn);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final Greenhouse other = (Greenhouse) obj;
+        if (!Objects.equals(this.conn, other.conn))
+        {
+            return false;
+        }
+        return true;
+    }
+    
 }

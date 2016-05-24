@@ -7,25 +7,13 @@ import org.json.JSONStringer;
 
 public class Solution
 {
-    private int id;
     private int errorCode;
     private String description;
     
-    public Solution(int id, int errorCode, String description)
+    public Solution(int errorCode, String description)
     {
-        this.id = id;
         this.errorCode = errorCode;
         this.description = description;
-    }
-
-    public int getId()
-    {
-        return id;
-    }
-    
-    public void setId(int id)
-    {
-        this.id = id;
     }
 
     public int getErrorCode()
@@ -44,8 +32,6 @@ public class Solution
         try
         {
             s.object();
-            s.key("id");
-            s.value(id);
             s.key("errorCode");
             s.value(errorCode);
             s.key("description");

@@ -7,6 +7,7 @@ import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
+import java.util.Objects;
 
 /**
  * Connect and communicate with ABB PLC via UDP PLC default address is:
@@ -182,4 +183,37 @@ public class UDPConnection extends PLCConnection implements IMessage
     {
         return adr.getHostAddress();
     }
+
+    @Override
+    public int hashCode()
+    {
+        int hash = 7;
+        hash = 17 * hash + Objects.hashCode(this.adr);
+        hash = 17 * hash + this.port;
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+        if (obj == null)
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass())
+        {
+            return false;
+        }
+        final UDPConnection other = (UDPConnection) obj;
+        if (!Objects.equals(this.adr, other.adr))
+        {
+            return false;
+        }
+        if (this.port != other.port)
+        {
+            return false;
+        }
+        return true;
+    }
+    
 }

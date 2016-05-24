@@ -3,7 +3,6 @@ package gui;
 import business.ConnectionController;
 import java.io.IOException;
 import java.net.URL;
-import java.util.LinkedList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -17,6 +16,8 @@ import plc.PLCController;
 import java.util.Observer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javafx.beans.property.SimpleObjectProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -54,9 +55,9 @@ public class GUIController implements Initializable, Observer
     @FXML
     private TableView<Solution> solutionTable;
     @FXML
-    private TableColumn<Solution, Integer> solutionTableId, solutionTableCode;
+    private TableColumn<Solution, Integer> solutionTableCode;
     @FXML
-    private TableColumn<Solution, String> solutionTableDescritption;
+    private TableColumn<Solution, String> solutionTableDescription;
     @FXML
     private TabPane pane;
     @FXML
@@ -80,6 +81,16 @@ public class GUIController implements Initializable, Observer
         {
             GUIController.get().errorListView.setItems(FXCollections.observableArrayList(PLCController.get().getErrors(GUIController.get().greenhouseListView.getSelectionModel().getSelectedItem())));
         });
+        GUIController.get().greenhouseListView.getSelectionModel().selectedItemProperty().addListener(listener ->
+        {
+            GUIController.get().greenhouseListView.setItems(FXCollections.observableArrayList(PLCController.get().getGreenhouses()));
+        });
+        GUIController.get().errorTableCode.setCellValueFactory((TableColumn.CellDataFeatures<ErrorType, Integer> param) -> new SimpleObjectProperty<Integer>(param.getValue().getErrorCode()));
+        GUIController.get().errorTableDescription.setCellValueFactory((TableColumn.CellDataFeatures<ErrorType, String> param) -> new SimpleStringProperty(param.getValue().getDescription()));
+        GUIController.get().solutionTableCode.setCellValueFactory((TableColumn.CellDataFeatures<Solution, Integer> param) -> new SimpleObjectProperty<Integer>(param.getValue().getErrorCode()));
+        GUIController.get().solutionTableDescription.setCellValueFactory((TableColumn.CellDataFeatures<Solution, String> param) -> new SimpleStringProperty(param.getValue().getDescription()));
+        GUIController.get().errorTable.getItems().setAll(ConnectionController.get().getErrorTypes().values());
+        GUIController.get().solutionTable.getItems().setAll(ConnectionController.get().getSolutions());
     }
 
     public void removeError(Error e)

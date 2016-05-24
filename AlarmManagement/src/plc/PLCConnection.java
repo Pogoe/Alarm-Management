@@ -1,5 +1,7 @@
 package plc;
 
+import java.util.Objects;
+
 /**
  * Methods to PLC communication
  *
