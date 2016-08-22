@@ -32,9 +32,9 @@ public class ConnectionController implements Observer
     
     private ConnectionController() throws MalformedURLException
     {
-        sendErrorURL = new URL("http://127.0.0.1:8080/errorHandler");
-        getErrorCodesURL = new URL("http://127.0.0.1:8080/getErrorsToJava");
-        updateDatabaseURL = new URL("http://127.0.0.1:8080/updateTemplate");
+        sendErrorURL = new URL("http://10.126.18.83:8080/storeError");
+        getErrorCodesURL = new URL("http://10.126.18.83:8080/getErrorTypes");
+        updateDatabaseURL = new URL("http://10.126.18.83:8080/updateTemplate");
     }
         
     public static ConnectionController get()
@@ -57,6 +57,7 @@ public class ConnectionController implements Observer
         {    
             HttpURLConnection conn = (HttpURLConnection) sendErrorURL.openConnection();
             
+            conn.setDoInput(true);
             conn.setDoOutput(true);
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded;charset=UTF-8");
@@ -69,6 +70,19 @@ public class ConnectionController implements Observer
                 output.writeBytes("json=" + URLEncoder.encode(json, "UTF-8"));
                 output.flush();
             }
+            
+            try (BufferedReader input = new BufferedReader(new InputStreamReader(conn.getInputStream())))
+            {
+                StringBuilder sb = new StringBuilder();
+                String line;
+                while((line = input.readLine()) != null)
+                {
+                    sb.append(line);
+                }
+                System.out.println(sb.toString());
+            }
+            
+            System.out.println("Error stored with code: " + conn.getResponseCode() + " " + conn.getResponseMessage());
         } catch (MalformedURLException ex)
         {
             Logger.getLogger(ConnectionController.class.getName()).log(Level.SEVERE, null, ex);
@@ -177,7 +191,9 @@ public class ConnectionController implements Observer
     {
         if(arg instanceof Error)
         {
+            System.out.println("sending error");
             sendError((Error) arg);
         }
+        System.out.println("after error");
     }
 }

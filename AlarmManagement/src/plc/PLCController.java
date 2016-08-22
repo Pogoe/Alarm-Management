@@ -37,6 +37,7 @@ public class PLCController extends Observable
         addresses.add(Inet4Address.getByName("192.168.0.30"));
         addresses.add(Inet4Address.getByName("192.168.0.40"));
         addObserver(GUIController.get());
+        addObserver(ConnectionController.get());
     }
 
     public static PLCController get()
@@ -69,12 +70,12 @@ public class PLCController extends Observable
                         {
                             greenhouses.removeIf((Greenhouse g) ->
                             {
-                                return g.getConnection().getIp().equals(address.getHostName());
+                                return g.getConnection().getIp().equals(address.getHostAddress());
                             });
                         }
                         else if(address.isReachable(1000))
                         {
-                            PLCConnection conn = new UDPConnection(5000, address.getHostName());
+                            PLCConnection conn = new UDPConnection(5000, address.getHostAddress());
 
                             if(!greenhouses.contains(new Greenhouse(conn)))
                             {
@@ -104,13 +105,22 @@ public class PLCController extends Observable
 
     public void initialize()
     {
-        addresses.parallelStream().map((address) -> new UDPConnection(5000, address.getHostAddress())).forEach((conn) ->
-        {
-            addGreenhouse(new Greenhouse(conn));
+        addresses.parallelStream().forEach((address) -> {
+            try
+            {
+                if(address.isReachable(1000))
+                {
+                    PLCConnection con = new UDPConnection(5000, address.getHostAddress());
+                    addGreenhouse(new Greenhouse(con));
+                }
+            } catch (IOException ex)
+            {
+                    Logger.getLogger(PLCController.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
-        
         errorTypes = ConnectionController.get().getErrorTypes();
         checkForErrors();
+        checkIPAdresses();
     }
 
     public void addGreenhouse(Greenhouse g)
@@ -175,6 +185,7 @@ public class PLCController extends Observable
         e.setSource(g);
         errors.get(g).add(e);
         notifyObservers(e);
+        ConnectionController.get().sendError(e);
     }
 
     public void removeError(Greenhouse g, Error e)
